@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html ng-app="sampleApp">
+	<head>
+		<meta charset="utf-8">
+		<link href="../lib/bootstrap.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<div ng-controller="controller1" class="jumbotron" ng-click="addView()">
+			<h1>{{user.surname}} {{user.lastname}}</h1>
+			<h2>
+				<span class="label label-primary">
+					LASTNAME: {{user.lastname}}
+				</span>
+		    </h2>
+			<h2>
+				<span class="label label-primary">
+					SURNAME: {{user.surname}}
+				</span>
+		    </h2>			
+		    <h2>
+				<span class="label label-primary">
+					AGE: {{user.age}}
+				</span>
+		    </h2>
+	    	<h2 ng-controller="controller2">
+		    	<span class="label label-primary">
+					REGISTERED: {{user.registered}}
+				</span>
+			</h2>
+		    <h2>
+				<span class="label label-primary">
+					VIEW: {{user.view}}
+				</span>
+		    </h2>
+		</div>
+		<script src="../lib/angular.min.js"></script>
+		<script src="../js/component2.js"></script>
+	</body>
+</html>
