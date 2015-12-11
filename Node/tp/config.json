@@ -1,0 +1,5 @@
+{
+	"port":1337,
+	"contentDrectory":"/uploads",
+	"presentationDirectory":"/presentation_content"
+}
