@@ -36,6 +36,7 @@ IOController.listen = function(server)
 			console.log("commande : " + cmd);
 
 			var presId = data.PRES_ID;
+			
 			var slid = slidModel.read(presId);
 			console.log(slid);
 			//slid.src = "/slid/" ;//+ slid.id;

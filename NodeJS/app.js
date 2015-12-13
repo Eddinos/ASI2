@@ -11,6 +11,7 @@ var defaultRoute = require("./app/routes/default.route.js");
 var slidRoute = require("./app/routes/slid.router.js");
 var IOController = require("./app/controllers/io.controllers.js");
 var io = require('socket.io');
+var SlidModel = require("./app/models/slid.model.js")
 
 var app= express();                                       
 
@@ -28,8 +29,10 @@ app.use(slidRoute);
 //IOController.listen(server);
 
 
-app.use("/admin", express.static(path.join(__dirname, "public/Angular.js"))); 
-app.use("/watch", express.static(path.join(__dirname, "public/watch")));
+app.use("/Angular", express. static (path.join(__dirname, "public/Angular")));
+
+app.use("/watch", express. static (path.join(__dirname, "public/Angular/watch")));
+app.use("/admin", express. static (path.join(__dirname, "public/Angular/admin")));
 
 app.get('/socket', function(req, res){
     IOController.listen(server);
@@ -37,73 +40,60 @@ app.get('/socket', function(req, res){
 });
 
 
-app.use("/loadpres", function(request,response){
-    
-    var myArray=[];
-    var p = CONFIG.presentationDirectory;
-    var path = require("path");
-    
-    var fs = require('fs');
-    var listfilemap ={};
-        
+var jsonPres = {};
 
-    fs.readdir(p,function(err, files){
-     if (err) throw err;
-        
-        for(var i=0; i<=files.length;i++)
-        {
-                     if (path.extname(files[i]) === ".json")
-                {
-                    myArray.push(p+"/"+files[i]);
-                }
-
-        }          
-        
-            myArray.forEach(function(jsonfile){
-                fs.readFile(jsonfile, function(err,data){
-                if (err) throw err;
-                    var obj = JSON.parse(data);
-                    listfilemap[obj.id]= obj;
-                    if (myArray.length===Object.keys(listfilemap).length)
-                    {
-                        response.send(listfilemap);
-                    }
+app.use("/loadPres",function(request,response,cb){
+    //response.send(CONFIG);
+    //var dir="presentation_content";
+    var extension = '.json';
+    fs.readdir(CONFIG.presentationDirectory, function(err, files){
+        if(err) console.error(err);
+        //var jsonPres = {};
+        for (var f in files){
+            if(path.extname(files[f]) == extension){
+                filePath = CONFIG.presentationDirectory+"/"+files[f];
+                fs.readFile(filePath, "utf-8", function(err, data){
+                    if(err) console.error(err);
+                    jsonObj = JSON.parse(data);
+                    jsonPres[jsonObj.id] = jsonObj;
+                    //console.log(jsonPres);
+                    //response.send("Done");
                 });
-                
-            });         
-});  
-        
+            }
+        }
+    });
+    response.send("Done");
 });
 
-app.post("/savePres", function(request,response){
-    var content ="";
-    var Json_String;
-    var Json_String_ID;
-    var Json_String_Position;
-    var Json_String_Path=CONFIG.presentationDirectory;
-    var fs = require("fs");
 
-
-    request.on("data", function(data){
-
-
-         if(data)   
-         {
-         content += data;
-         }
-   
-            Json_String_ID= Json_String.id+".pres.json";
-            Json_String_Position =Json_String_Path+"/"+Json_String_ID;
-
-        });
-    
-        request.on("end", function(end){
-        fs.writeFileSync(Json_String_Position, content); 
-            console.log("JSON SAVED");
-            
-        
+app.use("/savePres",function(request,response,cb){
+    var fileName = "presid";
+    var filePath = fileName+".pres.json";
+    //var filePath = CONFIG.presentationDirectory+"/"+fileName+".pres.json";
+    //console.log(jsonPres);
+    //console.log(filePath);
+    fs.writeFile(filePath, JSON.stri ngify(jsonPres), function (err) {
+      if (err) return console.log(err)
+      console.log(JSON.stringify(jsonPres))
+      console.log('writing to ' + fileName);
     });
-        
+    response.send("Done");
     
-    
+});
+
+app.use("/testSlidModel",function(request,response,cb){
+    var slid0 = {type:"type1",id:"id1",title:"title1",fileName:"filename1",data:"data1"};
+    var slid1 = new SlidModel(slid0);
+    /*slid1 = new SlidModel();
+    slid1.type = "type1";
+    slid1.id = "id1";
+    slid1.title = "title1";
+    slid1.fileName = "filename1";
+    //slid1.setData("data1");*/
+    SlidModel.create(slid1);
+    //response.send(slid1.toString());
+    var slid2 = new SlidModel.read("id1");
+    //slid2 = new SlidModel(read("id1"));
+    response.send(slid2.toString());
+    //response.send("OK");
 });

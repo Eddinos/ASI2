@@ -66,7 +66,7 @@ SlidModel.create= function(slidModel, callback){
             callback(err);
             return;
         }
-        callback();
+        //callback();
     })
 
 
@@ -76,7 +76,7 @@ SlidModel.create= function(slidModel, callback){
 SlidModel.read = function(id, callback){
     var fs = require("fs");
     var dirpath =CONFIG.contentDirectory;
-    var path = utils.getMetaFilePath(id);
+    var path = "../" + utils.getMetaFilePath(id);
     var slidToRead = new SlidModel();
 
     if (id == null){
@@ -93,7 +93,7 @@ SlidModel.read = function(id, callback){
             }
         var obj = new SlidModel(JSON.parse(data));
         console.log(obj.id);
-        callback(null, obj);
+        //callback(null, obj);
     });
 }
 
