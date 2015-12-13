@@ -25,14 +25,34 @@ app.use(defaultRoute);
 
 app.use("/Angular", express. static (path.join(__dirname, "public/Angular")));
 
+app.use("/watch", express. static (path.join(__dirname, "public/Angular/watch")));
+app.use("/admin", express. static (path.join(__dirname, "public/Angular/admin")));
 
-app.get("/loadPres", function(request, response){
-	fs.readdir("tp/presentation_content", function(err, files)
+
+app.use("/loadPres", function(request, response){
+	fs.readdir("presentation_content", function(err, files)
 	{
-		for(i in files)
+		if(err) console.log(err);
+		for(var i in files)
 		{
-			response.send("wouhou");
+			console.log("OK")
+			if (path.extname(files[i]) == '.json') 
+			{
+				console.log(files[i]);
+				fs.readFile(CONFIG.presentationDirectory + files[i], "utf8", function(err, data)
+				{
+					if(err) console.log(err);
+					var json = JSON.parse(data);
+					response.send(json);
+				})
+			};
+			
 		}
 	})
 })
 
+app.use("/savePres", function(request, response){
+	var id = request.param('id');
+	var name = request.param('name');
+	response.send("id : " + id + " name : " + name)
+})

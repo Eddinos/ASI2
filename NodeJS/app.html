@@ -1,0 +1,17 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+var socket = io();
+//socket.emit('data_comm', "socketfdp");
+//socket.emit('data_comm', "ntmsocket");
+
+var pres = {
+"CMD": 'START',
+"PRES_ID": '137ba76b1-5c5d-47ef-8350-f4ea9407276d'
+};
+
+socket.emit('slidEvent', pres);
+
+/*socket.on('myEvent2', function(data){
+alert(data);
+});*/
+</script>
